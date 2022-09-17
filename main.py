@@ -6,19 +6,11 @@ def numberToLetter(number):
     return string.ascii_uppercase[number]
 def encryptDecryptLetter(operation, messageLetter, keyLetter):
     return numberToLetter((letterToNumber(messageLetter) + letterToNumber(keyLetter)) % 26) if operation.upper() == 'E' else numberToLetter((letterToNumber(messageLetter) - letterToNumber(keyLetter)) % 26)
-def encryptWord(message, key):
-    messageLetters, keyLetters, encryptedWord = [*message], [*key], ''
+def encryptDecryptWord(operation, message, key):
+    messageLetters, keyLetters, finalWord = [*message], [*key], ''
     for i in range(len(message)):
-        encryptedWord += encryptDecryptLetter('E', messageLetters[i], keyLetters[i % len(keyLetters)]) if messageLetters[i] in string.ascii_letters else ' '
-    return encryptedWord
-def decryptWord(message, key):
-    messageLetters, keyLetters, decryptedWord = [*message], [*key], ''
-    for i in range(len(message)):
-        decryptedWord += encryptDecryptLetter('D', messageLetters[i], keyLetters[i % len(keyLetters)]) if messageLetters[i] in string.ascii_letters else ' '
-    return decryptedWord
-
-def validChoice(choice):
-    return choice == 'E' or choice == 'D'
+        finalWord += encryptDecryptLetter(operation, messageLetters[i], keyLetters[i % len(keyLetters)]) if messageLetters[i] in string.ascii_letters else ' '
+    return finalWord
 def isAlphabetic(string):
     for character in string:
         if not character.isalpha() and character != ' ':
@@ -27,7 +19,7 @@ def isAlphabetic(string):
 def main():
     userChoice = input("Enter an E to encrypt a message, a D to decrypt a message, and Q to quit: ").upper()
     while userChoice != 'Q':
-        if validChoice(userChoice):
+        if userChoice == 'E' or userChoice == 'D':
             key = input("Enter the Vigenere key: ").upper().replace(" ", "")
             while (not isAlphabetic(key)):
                 print("Invalid response!")
@@ -37,13 +29,12 @@ def main():
                 while (not isAlphabetic(message)):
                     print("Invalid response!")
                     message = input("Enter the message to be encrypted: ").upper()
-                print(encryptWord(message, key))
             if userChoice == 'D':
                 message = input("Enter the cypher text to decrypt: ").upper()
                 while (not isAlphabetic(message)):
                     print("Invalid response!")
                     message = input("Enter the cypher text to decrypt: ").upper()
-                print(decryptWord(message, key))
+            print(encryptDecryptWord(userChoice, message, key))
         else:
             print("Invalid response!")
         userChoice = input("Enter an E to encrypt a message, a D to decrypt a message, and Q to quit: ").upper()
